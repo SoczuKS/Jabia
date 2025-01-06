@@ -2,6 +2,11 @@ package mpks.jabia;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        try {
+            Server server = new Server();
+            server.start();
+        } catch (Exception exception) {
+            System.err.println("Exception occurred: " + exception.getMessage());
+        }
     }
 }
