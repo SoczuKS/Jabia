@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+group = 'mpks.jabia'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainModule = 'Client'
+    mainClass = 'mpks.jabia.Main'
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'com.github.almasb:fxgl:21.1'
+}
+
+javafx {
+    version = "23.0.1"
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media' ]
+}
+
+test {
+    useJUnitPlatform()
+}

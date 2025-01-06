@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'mpks.jabia'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainModule = 'Server'
+    mainClass = 'mpks.jabia.Main'
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
