@@ -13,7 +13,7 @@ repositories {
 
 application {
     mainModule = 'Client'
-    mainClass = 'mpks.jabia.Main'
+    mainClass = 'mpks.jabia.client.Main'
 }
 
 dependencies {

@@ -1,5 +1,6 @@
 module Server {
     requires java.sql;
+    requires Common;
 
-    exports mpks.jabia;
+    exports mpks.jabia.server;
 }

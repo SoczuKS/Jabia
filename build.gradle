@@ -1,23 +1,15 @@
 plugins {
     id 'java'
-    id 'application'
 }
 
 group = 'mpks.jabia'
-version = '1.0'
+version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
-application {
-    mainModule = 'Server'
-    mainClass = 'mpks.jabia.server.Main'
-}
-
 dependencies {
-    implementation project(':Common')
-    implementation 'org.xerial:sqlite-jdbc:3.47.2.0'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }

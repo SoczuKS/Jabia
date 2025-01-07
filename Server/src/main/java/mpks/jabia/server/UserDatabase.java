@@ -1,4 +1,4 @@
-package mpks.jabia;
+package mpks.jabia.server;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

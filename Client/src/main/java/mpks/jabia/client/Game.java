@@ -1,4 +1,4 @@
-package mpks.jabia;
+package mpks.jabia.client;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
@@ -6,8 +6,18 @@ import com.almasb.fxgl.dsl.FXGL;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 
-public class Main extends GameApplication {
+public class Game extends GameApplication {
     private final int windowWidth = 1360;
+    private final String serverUrl = "localhost";
+    MainMenu mainMenu;
+
+    public Game() {
+
+    }
+
+    public void run(String[] args) {
+        launch(args);
+    }
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -32,7 +42,7 @@ public class Main extends GameApplication {
         Button loginButton = new Button("Login");
         loginButton.setPrefWidth(100);
         loginButton.setPrefHeight(50);
-        loginButton.setOnAction(e -> {
+        loginButton.setOnAction(_ -> {
             String username = usernameTextArea.getText();
             String password = passwordTextArea.getText();
             System.out.println("Username: " + username + ", Password: " + password);
@@ -43,9 +53,5 @@ public class Main extends GameApplication {
         FXGL.addUINode(usernameTextArea, uiX, 100);
         FXGL.addUINode(passwordTextArea, uiX, 175);
         FXGL.addUINode(loginButton, uiX + 75, 250);
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

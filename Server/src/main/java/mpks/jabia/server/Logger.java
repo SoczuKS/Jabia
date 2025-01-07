@@ -1,4 +1,4 @@
-package mpks.jabia;
+package mpks.jabia.server;
 
 import java.io.BufferedWriter;
 import java.io.File;

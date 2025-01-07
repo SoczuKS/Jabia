@@ -1,0 +1,4 @@
+rootProject.name = 'Jabia'
+include 'Common'
+include 'Server'
+include 'Client'

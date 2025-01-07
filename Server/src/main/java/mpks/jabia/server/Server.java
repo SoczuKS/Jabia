@@ -1,4 +1,6 @@
-package mpks.jabia;
+package mpks.jabia.server;
+
+import mpks.jabia.common.NetConfig;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,11 +13,9 @@ public class Server {
     private final UserDatabase userDatabase;
     private ServerSocket serverSocket;
     boolean running;
-    final int socketPort;
     private final ExecutorService executorService;
 
     Server() throws IOException {
-        socketPort = 33581;
         logger = new Logger();
         userDatabase = new UserDatabase(logger);
         logger.write("Server ready.");
@@ -25,7 +25,7 @@ public class Server {
     void start() throws IOException {
         try {
             userDatabase.connect();
-            serverSocket = new ServerSocket(socketPort);
+            serverSocket = new ServerSocket(NetConfig.SERVER_PORT);
             running = true;
             logger.write("Server started.");
 
