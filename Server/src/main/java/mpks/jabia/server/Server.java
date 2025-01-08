@@ -17,6 +17,7 @@ public class Server {
 
     Server() throws IOException {
         logger = new Logger();
+        running = false;
         userDatabase = new UserDatabase(logger);
         logger.write("Server ready.");
         executorService = Executors.newFixedThreadPool(1000);
@@ -31,7 +32,7 @@ public class Server {
 
             while (running) {
                 try {
-                    executorService.execute(new ClientHandler(serverSocket.accept(), userDatabase, logger));
+                    executorService.execute(new ClientHandler(serverSocket.accept(), userDatabase, logger, this));
                 } catch (IOException e) {
                     logger.write("Error occurred: " + e.getMessage());
                     running = false;

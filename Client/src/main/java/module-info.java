@@ -4,6 +4,7 @@ module Client {
     requires javafx.graphics;
     requires javafx.media;
     requires com.almasb.fxgl.all;
+    requires Common;
 
     opens mpks.jabia.client to javafx.fxml;
     exports mpks.jabia.client;

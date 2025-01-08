@@ -19,7 +19,9 @@ application {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation project(':Common')
     implementation 'com.github.almasb:fxgl:21.1'
+    implementation 'org.json:json:20231013'
 }
 
 javafx {
