@@ -11,10 +11,10 @@ import java.util.concurrent.Executors;
 public class Server {
     private final Logger logger;
     private final GameController gameController;
-    boolean running;
     private final ExecutorService executorService;
+    boolean running;
 
-    Server() throws IOException, SQLException {
+    Server() throws IOException {
         logger = new Logger();
         running = false;
         gameController = new GameController(logger);

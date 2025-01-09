@@ -2,11 +2,7 @@ package mpks.jabia.server;
 
 import mpks.jabia.common.User;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class UserDatabase {
     Logger logger;
@@ -23,17 +19,26 @@ public class UserDatabase {
         createDatabase();
     }
 
-    User getUser(String username) throws IOException, SQLException {
-        var resultSet = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "'");
-        if (resultSet.next()) {
-            String password = resultSet.getString("password");
-            return new User(username, password);
+    User getUser(String username) throws SQLException {
+        String query = "SELECT * FROM users WHERE username = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                String password = resultSet.getString("password");
+                return new User(username, password);
+            }
         }
         return null;
     }
 
     User registerUser(String username, String password) throws SQLException {
-        statement.executeUpdate("INSERT INTO users (username, password) VALUES ('" + username + "', '" + password + "')");
+        String query = "INSERT INTO users (username, password) VALUES (?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            preparedStatement.executeUpdate();
+        }
         return new User(username, password);
     }
 

@@ -5,7 +5,7 @@ public class Main {
         try {
             var game = new Game();
             game.run(args);
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
     }

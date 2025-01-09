@@ -4,9 +4,6 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.SceneFactory;
-import com.almasb.fxgl.dsl.FXGL;
-import javafx.application.Platform;
-import javafx.scene.control.Label;
 import mpks.jabia.common.User;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,9 +11,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 import static mpks.jabia.client.GameSettings.windowWidth;
+import static mpks.jabia.common.NetConfig.SERVER_ADDRESS;
 
 public class Game extends GameApplication {
-    private final String serverUrl = "localhost";
     public Socket socket = null;
     public User user = null;
 
@@ -26,7 +23,7 @@ public class Game extends GameApplication {
 
     public void connectToServer() {
         try {
-            socket = new Socket(serverUrl, 34527);
+            socket = new Socket(SERVER_ADDRESS, 34527);
             socket.setSoTimeout(10000);
         } catch (IOException e) {
             throw new RuntimeException(e);

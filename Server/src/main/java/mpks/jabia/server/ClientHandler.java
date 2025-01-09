@@ -48,13 +48,13 @@ public class ClientHandler implements Runnable {
             clientConnected = false;
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            try {
-                clientSocket.close();
-                logger.write(clientSocket, "Client handler finished.");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        }
+
+        try {
+            clientSocket.close();
+            logger.write(clientSocket, "Client handler finished.");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
