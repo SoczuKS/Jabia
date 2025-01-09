@@ -1,5 +1,8 @@
 package mpks.jabia.server;
 
+import mpks.jabia.common.User;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,6 +21,20 @@ public class UserDatabase {
         createConnection();
         createStatement();
         createDatabase();
+    }
+
+    User getUser(String username) throws IOException, SQLException {
+        var resultSet = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "'");
+        if (resultSet.next()) {
+            String password = resultSet.getString("password");
+            return new User(username, password);
+        }
+        return null;
+    }
+
+    User registerUser(String username, String password) throws SQLException {
+        statement.executeUpdate("INSERT INTO users (username, password) VALUES ('" + username + "', '" + password + "')");
+        return new User(username, password);
     }
 
     private void createConnection() throws SQLException {
