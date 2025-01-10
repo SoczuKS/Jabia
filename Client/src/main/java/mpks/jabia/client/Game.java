@@ -3,6 +3,7 @@ package mpks.jabia.client;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
+import com.almasb.fxgl.app.scene.LoadingScene;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import mpks.jabia.common.User;
 import org.jetbrains.annotations.NotNull;
@@ -38,10 +39,14 @@ public class Game extends GameApplication {
         settings.setVersion("1.0.0");
         settings.setMainMenuEnabled(true);
         settings.setSceneFactory(new SceneFactory() {
-            @NotNull
             @Override
-            public FXGLMenu newMainMenu() {
+            public @NotNull FXGLMenu newMainMenu() {
                 return new LoginScreen();
+            }
+
+            @Override
+            public @NotNull LoadingScene newLoadingScene() {
+                return new LoadingScreen();
             }
         });
     }
