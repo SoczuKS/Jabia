@@ -59,7 +59,6 @@ public class ClientHandler implements Runnable {
     }
 
     private void processMessage(String msg) throws IOException, SQLException {
-        // Process the message
         JSONObject json = new JSONObject(msg);
         switch (json.getString("type")) {
             case "request":
@@ -79,7 +78,7 @@ public class ClientHandler implements Runnable {
         String password = json.getString("password");
 
         user = gameController.login(username, password);
-        String response = user != null ? ResponseBuilder.buildLoginResponse(true) : ResponseBuilder.buildLoginResponse(false);
+        String response = ResponseBuilder.buildLoginResponse(user);
         SocketWriter.write(clientSocket, response);
         logger.write(clientSocket, "Sent: " + response);
     }

@@ -6,27 +6,27 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class GameController {
-    private final UserDatabase userDatabase;
+    private final DatabaseConnector databaseConnector;
     private final Logger logger;
 
     GameController(Logger logger) {
         this.logger = logger;
-        userDatabase = new UserDatabase(logger);
+        databaseConnector = new DatabaseConnector(logger);
     }
 
     public void connectDatabase() throws SQLException {
-        userDatabase.connect();
+        databaseConnector.connect();
     }
 
     public User login(String username, String password) throws SQLException, IOException {
-        var user = userDatabase.getUser(username);
+        var user = databaseConnector.getUser(username);
 
         if (user == null) {
             logger.write("User not found. Registering user.");
-            return userDatabase.registerUser(username, password);
+            return databaseConnector.registerUser(username, password);
         }
 
-        boolean passwordMatch = user.password().equals(password);
+        boolean passwordMatch = user.getPassword().equals(password);
         if (!passwordMatch) {
             logger.write("Incorrect password.");
             return null;
