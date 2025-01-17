@@ -7,6 +7,7 @@ module Client {
     requires Common;
     requires org.json;
     requires org.jetbrains.annotations;
+    requires java.desktop;
 
     opens mpks.jabia.client to javafx.fxml, com.almasb.fxgl.core;
     exports mpks.jabia.client;

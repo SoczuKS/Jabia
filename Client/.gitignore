@@ -5,3 +5,4 @@ gradlew
 gradlew.bat
 logs/
 system/
+out/
