@@ -5,9 +5,13 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.LoadingScene;
 import com.almasb.fxgl.app.scene.SceneFactory;
+import com.almasb.fxgl.entity.SpawnData;
 import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import mpks.jabia.client.character.CharacterEntity;
+import mpks.jabia.client.ui.BasicInfoView;
+import mpks.jabia.client.ui.PlayerInventoryView;
 import mpks.jabia.common.User;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 import static mpks.jabia.client.GameSettings.windowWidth;
@@ -74,14 +79,17 @@ public class Game extends GameApplication {
         gameplay = new Gameplay();
 
         getGameScene().setBackgroundColor(Color.BLACK);
-        getGameWorld().addEntityFactory(new JabiaEntityFactory());
+        getGameWorld().addEntityFactory(new JabiaEntityFactory(this));
 
-        //CharacterEntity userCharacter = (CharacterEntity) spawn("player");
+        SpawnData spawnData = new SpawnData();
+        spawnData.put("user", user);
+
+        CharacterEntity userCharacter = (CharacterEntity) spawn("player", spawnData);
         //spawn("cellSelection");
 
         getGameScene().getViewport().setLazy(true);
-        getGameScene().getViewport().setZoom(1.5);
-        //getGameScene().getViewport().bindToEntity(userCharacter, (double) getAppWidth() / 2, (double) getAppHeight() / 2);
+        getGameScene().getViewport().setZoom(1.0);
+        getGameScene().getViewport().bindToEntity(userCharacter, (double) getAppWidth() / 2, (double) getAppHeight() / 2);
 
         try {
             gameplay.goToMapWithPosition("map", 2, 6);
@@ -93,7 +101,8 @@ public class Game extends GameApplication {
     @Override
     protected void initUI() {
         getGameScene().setUIMouseTransparent(false);
-        getGameScene().setCursor(image("ui/cursors/main.png"), new Point2D(52.0, 10.0));
+        Image cursor = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/assets/textures/ui/cursors/main.png")));
+        getGameScene().setCursor(cursor, new Point2D(52.0, 10.0));
 
         getGameScene().addUINodes(
                 new BasicInfoView(),
@@ -116,6 +125,6 @@ public class Game extends GameApplication {
 
     @Override
     protected void onUpdate(double timePerFrame) {
-        //currentMap.onUpdate(timePerFrame);
+        gameplay.getCurrentMap().onUpdate(timePerFrame);
     }
 }

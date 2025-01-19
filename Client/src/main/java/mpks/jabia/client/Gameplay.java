@@ -1,12 +1,11 @@
 package mpks.jabia.client;
 
-import com.almasb.fxgl.app.services.FXGLAssetLoaderService;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.level.tiled.TMXLevelLoader;
 import com.almasb.fxgl.pathfinding.astar.AStarMoveComponent;
+import mpks.jabia.client.character.CharacterEntity;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 

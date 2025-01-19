@@ -1,4 +1,4 @@
-package mpks.jabia.client;
+package mpks.jabia.client.ui;
 
 import javafx.scene.Parent;
 

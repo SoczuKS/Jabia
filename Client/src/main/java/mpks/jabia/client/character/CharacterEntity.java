@@ -1,4 +1,4 @@
-package mpks.jabia.client;
+package mpks.jabia.client.character;
 
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.pathfinding.astar.AStarMoveComponent;

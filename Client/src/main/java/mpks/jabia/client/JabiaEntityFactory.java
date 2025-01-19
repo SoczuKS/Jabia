@@ -1,23 +1,50 @@
 package mpks.jabia.client;
 
+import com.almasb.fxgl.core.util.LazyValue;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
+import com.almasb.fxgl.entity.components.CollidableComponent;
+import com.almasb.fxgl.entity.components.IrremovableComponent;
+import com.almasb.fxgl.entity.state.StateComponent;
+import com.almasb.fxgl.pathfinding.CellMoveComponent;
+import com.almasb.fxgl.pathfinding.astar.AStarMoveComponent;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import mpks.jabia.client.character.*;
+import mpks.jabia.common.User;
 
+import static com.almasb.fxgl.dsl.FXGLForKtKt.animationBuilder;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
-import static mpks.jabia.client.EntityType.PORTAL;
-import static mpks.jabia.client.EntityType.WALKABLE;
+import static mpks.jabia.client.EntityType.*;
 
 public class JabiaEntityFactory implements EntityFactory {
+    private final Game game;
+
+    JabiaEntityFactory(Game game) {
+        this.game = game;
+    }
+
     @Spawns("player")
     public Entity newPlayer(SpawnData data) {
-        return null;
+        data.put("cellX", 0);
+        data.put("cellY", 0);
+
+        CharacterEntity player = (CharacterEntity) newCharacter(data);
+
+        player.setType(PLAYER);
+        player.addComponent(new PlayerComponent());
+        player.addComponent(new PlayerWorldComponent());
+        player.addComponent(new IrremovableComponent());
+        player.addComponent(new AnimationComponent("/assets/textures/characters/players/local_player.png"));
+        player.getViewComponent().getParent().setMouseTransparent(true);
+
+        return player;
     }
 
     @Spawns("other_player")
@@ -68,5 +95,27 @@ public class JabiaEntityFactory implements EntityFactory {
     @Spawns("cell_selection")
     public Entity newCellSelection(SpawnData data) {
         return null;
+    }
+
+    private Entity newCharacter(SpawnData data) {
+        CharacterEntity characterEntity = new CharacterEntity();
+        data.getData().forEach(characterEntity::setProperty);
+
+        characterEntity.setLocalAnchor(new Point2D(32, 54));
+        characterEntity.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.box(64, 64)));
+
+        characterEntity.addComponent(new CollidableComponent(true));
+        characterEntity.addComponent(new StateComponent());
+        characterEntity.addComponent(new CharacterEffectComponent());
+        characterEntity.addComponent(new CellMoveComponent(32,32,32 * 4.0));
+        characterEntity.addComponent(new AStarMoveComponent<>(new LazyValue<>(() -> game.gameplay.getCurrentMap().getGrid())));
+        characterEntity.addComponent(new CharacterActionComponent());
+        characterEntity.addComponent(new CharacterComponent(data));
+
+        characterEntity.goToPosition(data.get("cellX"), data.get("cellY"));
+
+        animationBuilder().fadeIn(characterEntity).buildAndPlay();
+
+        return characterEntity;
     }
 }
