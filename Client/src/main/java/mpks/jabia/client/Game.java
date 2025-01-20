@@ -29,6 +29,7 @@ public class Game extends GameApplication {
     public Socket socket = null;
     public User user = null;
     public Gameplay gameplay = null;
+    CharacterEntity userCharacter = null;
 
     public void run(String[] args) {
         launch(args);
@@ -84,7 +85,7 @@ public class Game extends GameApplication {
         SpawnData spawnData = new SpawnData();
         spawnData.put("user", user);
 
-        CharacterEntity userCharacter = (CharacterEntity) spawn("player", spawnData);
+        userCharacter = (CharacterEntity) spawn("player", spawnData);
         //spawn("cellSelection");
 
         getGameScene().getViewport().setLazy(true);
@@ -106,7 +107,7 @@ public class Game extends GameApplication {
 
         getGameScene().addUINodes(
                 new BasicInfoView(),
-                new PlayerInventoryView()
+                new PlayerInventoryView(userCharacter)
         );
     }
 
