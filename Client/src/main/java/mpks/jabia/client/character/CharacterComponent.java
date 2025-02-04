@@ -4,7 +4,7 @@ import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.component.Component;
 
 public class CharacterComponent extends Component {
-    public CharacterComponent(SpawnData data){
+    public CharacterComponent(SpawnData data) {
 
     }
 }

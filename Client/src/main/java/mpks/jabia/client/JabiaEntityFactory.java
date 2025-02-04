@@ -130,7 +130,6 @@ public class JabiaEntityFactory implements EntityFactory {
 
         characterEntity.addComponent(new CollidableComponent(true));
         characterEntity.addComponent(new StateComponent());
-        characterEntity.addComponent(new CharacterEffectComponent());
         characterEntity.addComponent(new CellMoveComponent(32,32,32 * 4.0));
         characterEntity.addComponent(new AStarMoveComponent<>(new LazyValue<>(() -> game.gameplay.getCurrentMap().getGrid())));
         characterEntity.addComponent(new CharacterActionComponent());
