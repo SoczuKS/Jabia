@@ -5,11 +5,14 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.LoadingScene;
 import com.almasb.fxgl.app.scene.SceneFactory;
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.SpawnData;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import mpks.jabia.client.character.CharacterEntity;
+import mpks.jabia.client.screen.LoadingScreen;
+import mpks.jabia.client.screen.LoginScreen;
 import mpks.jabia.client.ui.BasicInfoView;
 import mpks.jabia.client.ui.PlayerInventoryView;
 import mpks.jabia.common.User;
@@ -67,7 +70,7 @@ public class Game extends GameApplication {
 
     @Override
     protected void initGameVars(Map<String, Object> vars) {
-
+        super.initGameVars(vars);
     }
 
     @Override
@@ -86,7 +89,7 @@ public class Game extends GameApplication {
         spawnData.put("user", user);
 
         userCharacter = (CharacterEntity) spawn("player", spawnData);
-        //spawn("cellSelection");
+        spawn("cell_selection");
 
         getGameScene().getViewport().setLazy(true);
         getGameScene().getViewport().setZoom(1.0);
@@ -97,6 +100,17 @@ public class Game extends GameApplication {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    protected void initPhysics() {
+        FXGL.onCollisionCollectible(EntityType.PLAYER, EntityType.ITEM, (entity) -> {
+
+        });
+
+        FXGL.onCollisionCollectible(EntityType.PLAYER, EntityType.TREASURE_CHEST, (entity) -> {
+
+        });
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mpks.jabia.client;
 
+import com.almasb.fxgl.animation.Interpolators;
 import com.almasb.fxgl.core.util.LazyValue;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
@@ -17,6 +18,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import mpks.jabia.client.character.*;
+import mpks.jabia.client.components.CellSelectionComponent;
 import mpks.jabia.common.User;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.animationBuilder;
@@ -94,7 +96,29 @@ public class JabiaEntityFactory implements EntityFactory {
 
     @Spawns("cell_selection")
     public Entity newCellSelection(SpawnData data) {
-        return null;
+        Rectangle view = new Rectangle(32, 32, null);
+        view.setStroke(Color.BLACK);
+
+        animationBuilder()
+                .repeatInfinitely()
+                .autoReverse(true)
+                .interpolator(Interpolators.CIRCULAR.EASE_OUT())
+                .animate(view.strokeProperty())
+                .from(Color.color(0.0, 0.0, 0.0, 0.7))
+                .to(Color.color(1.0, 0.84313726, 0.0, 0.7))
+                .buildAndPlay();
+
+        Entity entity = entityBuilder(data)
+                .type(CELL_SELECTION)
+                .view(view)
+                .zIndex(3500)
+                .with(new CellSelectionComponent(game.gameplay))
+                .with(new IrremovableComponent())
+                .build();
+
+        entity.getViewComponent().getParent().setMouseTransparent(true);
+
+        return entity;
     }
 
     private Entity newCharacter(SpawnData data) {

@@ -1,4 +1,4 @@
-package mpks.jabia.client;
+package mpks.jabia.client.screen;
 
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import mpks.jabia.client.Game;
 import mpks.jabia.common.RequestBuilder;
 import mpks.jabia.common.SocketWriter;
 import mpks.jabia.common.User;

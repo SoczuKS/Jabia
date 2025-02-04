@@ -1,4 +1,4 @@
-package mpks.jabia.client;
+package mpks.jabia.client.screen;
 
 import com.almasb.fxgl.animation.AnimatedValue;
 import com.almasb.fxgl.animation.Interpolators;
