@@ -6,6 +6,7 @@ import com.almasb.fxgl.entity.EntityWorldListener;
 import com.almasb.fxgl.entity.level.Level;
 import com.almasb.fxgl.pathfinding.CellState;
 import com.almasb.fxgl.pathfinding.astar.AStarGrid;
+import mpks.jabia.client.component.TiledMapLayerOptimizerComponent;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
 import static mpks.jabia.client.EntityType.PORTAL;
@@ -33,7 +34,7 @@ public class Map implements EntityWorldListener {
         getGameWorld().addWorldListener(this);
         getGameWorld().setLevel(level);
 
-        grid = AStarGrid.fromWorld(FXGL.getGameWorld(), level.getWidth(), level.getHeight(), 32, 32, type -> {
+        grid = AStarGrid.fromWorld(FXGL.getGameWorld(), level.getWidth() / 32, level.getHeight() / 32, 32, 32, type -> {
             if (type == WALKABLE || type == PORTAL) {
                 return CellState.WALKABLE;
             }
@@ -41,9 +42,7 @@ public class Map implements EntityWorldListener {
         });
 
         getGameWorld().getEntitiesFiltered(it -> it.isType("TiledMapLayer"))
-                .forEach(entity -> {
-                    //TODO: entity.addComponent(new TiledMapLayerOptimizerComponent());
-                });
+                .forEach(entity -> entity.addComponent(new TiledMapLayerOptimizerComponent()));
     }
 
     public void exit() {
