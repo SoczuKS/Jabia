@@ -2,6 +2,7 @@ package mpks.jabia.client;
 
 import com.almasb.fxgl.animation.Interpolators;
 import com.almasb.fxgl.core.util.LazyValue;
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
@@ -18,11 +19,10 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import mpks.jabia.client.character.*;
-import mpks.jabia.client.components.CellSelectionComponent;
-import mpks.jabia.common.User;
+import mpks.jabia.client.character.component.*;
+import mpks.jabia.client.component.CellSelectionComponent;
 
-import static com.almasb.fxgl.dsl.FXGLForKtKt.animationBuilder;
-import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 import static mpks.jabia.client.EntityType.*;
 
 public class JabiaEntityFactory implements EntityFactory {
@@ -36,6 +36,7 @@ public class JabiaEntityFactory implements EntityFactory {
     public Entity newPlayer(SpawnData data) {
         data.put("cellX", 0);
         data.put("cellY", 0);
+        data.put("animationAssetName", "/assets/textures/characters/players/local_player.png");
 
         CharacterEntity player = (CharacterEntity) newCharacter(data);
 
@@ -43,7 +44,6 @@ public class JabiaEntityFactory implements EntityFactory {
         player.addComponent(new PlayerComponent());
         player.addComponent(new PlayerWorldComponent());
         player.addComponent(new IrremovableComponent());
-        player.addComponent(new AnimationComponent("/assets/textures/characters/players/local_player.png"));
         player.getViewComponent().getParent().setMouseTransparent(true);
 
         return player;
@@ -56,6 +56,11 @@ public class JabiaEntityFactory implements EntityFactory {
 
     @Spawns("npc")
     public Entity newNpc(SpawnData data) {
+        return null;
+    }
+
+    @Spawns("treasure_chest")
+    public Entity newTreasureChest(SpawnData data) {
         return null;
     }
 
@@ -83,7 +88,16 @@ public class JabiaEntityFactory implements EntityFactory {
 
         Entity entity = entityBuilder(data).type(WALKABLE).bbox(new HitBox(BoundingShape.box(width, height)))
                 .onClick((e) -> {
-                    // TODO: Fill
+                    int targetX = (int) (FXGL.getInput().getMouseXWorld() / 32);
+                    int targetY = (int) (FXGL.getInput().getMouseYWorld() / 32);
+
+                    getGameWorld().getSingleton(CELL_SELECTION)
+                            .getComponent(CellSelectionComponent.class)
+                            .onClick();
+
+                    getGameWorld().getSingleton(PLAYER)
+                            .getComponent(CharacterActionComponent.class)
+                            .orderMove(targetX, targetY);
                 }).build();
         entity.getViewComponent().addChild(new Rectangle(width, height, Color.TRANSPARENT));
         return entity;
@@ -132,8 +146,9 @@ public class JabiaEntityFactory implements EntityFactory {
         characterEntity.addComponent(new StateComponent());
         characterEntity.addComponent(new CellMoveComponent(32,32,32 * 4.0));
         characterEntity.addComponent(new AStarMoveComponent<>(new LazyValue<>(() -> game.gameplay.getCurrentMap().getGrid())));
-        characterEntity.addComponent(new CharacterActionComponent());
+        characterEntity.addComponent(new AnimationComponent(data.get("animationAssetName")));
         characterEntity.addComponent(new CharacterComponent(data));
+        characterEntity.addComponent(new CharacterActionComponent());
 
         characterEntity.goToPosition(data.get("cellX"), data.get("cellY"));
 

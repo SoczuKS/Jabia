@@ -9,8 +9,10 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.SpawnData;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import mpks.jabia.client.character.CharacterEntity;
+import mpks.jabia.client.event.EventHandler;
 import mpks.jabia.client.screen.LoadingScreen;
 import mpks.jabia.client.screen.LoginScreen;
 import mpks.jabia.client.ui.BasicInfoView;
@@ -120,22 +122,26 @@ public class Game extends GameApplication {
         getGameScene().setCursor(cursor, new Point2D(52.0, 10.0));
 
         getGameScene().addUINodes(
-                new BasicInfoView(),
+                new BasicInfoView(userCharacter),
                 new PlayerInventoryView(userCharacter)
         );
     }
 
     @Override
     protected void initInput() {
-//        onKeyDown(KeyCode.C, "ToggleBasicView", () ->
-//                getGameScene().getUINodes().stream()
-//                        .filter(node -> node instanceof BasicInfoView)
-//                        .forEach(node -> ((BasicInfoView) node).getMinimizeButton().onClick()));
-//
-//        onKeyDown(KeyCode.I, "ToggleInventoryView", () ->
-//                getGameScene().getUINodes().stream()
-//                        .filter(node -> node instanceof PlayerInventoryView)
-//                        .forEach(node -> ((PlayerInventoryView) node).getMinimizeButton().onClick()));
+        onKeyDown(KeyCode.C, "ToggleBasicView", () -> {
+            getGameScene().getUINodes().stream()
+                    .filter(node -> node instanceof BasicInfoView)
+                    .forEach(node -> ((BasicInfoView) node).getMinimizeButton().onClick());
+            return null;
+        });
+
+        onKeyDown(KeyCode.I, "ToggleInventoryView", () -> {
+            getGameScene().getUINodes().stream()
+                    .filter(node -> node instanceof PlayerInventoryView)
+                    .forEach(node -> ((PlayerInventoryView) node).getMinimizeButton().onClick());
+            return null;
+        });
     }
 
     @Override

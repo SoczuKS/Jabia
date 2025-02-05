@@ -1,4 +1,4 @@
-package mpks.jabia.client.character;
+package mpks.jabia.client.character.component;
 
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.inventory.Inventory;

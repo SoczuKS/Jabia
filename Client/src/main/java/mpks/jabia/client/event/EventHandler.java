@@ -1,4 +1,8 @@
-package mpks.jabia.client;
+package mpks.jabia.client.event;
+
+import static com.almasb.fxgl.core.math.FXGLMath.random;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.onEvent;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.play;
 
 public class EventHandler {
     private static EventHandler instance;
@@ -14,6 +18,6 @@ public class EventHandler {
     }
 
     public void initialize() {
-
+        onEvent(Events.ON_ORDERED_MOVE, (_) -> null);
     }
 }

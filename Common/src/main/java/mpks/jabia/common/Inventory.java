@@ -6,13 +6,16 @@ import org.json.JSONObject;
 import java.util.Vector;
 
 public class Inventory {
+    private int money;
     private Vector<Item> items;
 
-    public Inventory(){
+    public Inventory() {
+        money = 0;
         items = new Vector<>();
     }
 
     public Inventory(JSONObject json) {
+        money = json.getInt("money");
         items = new Vector<>();
         JSONArray itemsArray = json.getJSONArray("items");
         for (int i = 0; i < itemsArray.length(); i++) {
@@ -25,6 +28,6 @@ public class Inventory {
         for (Item item : items) {
             itemsArray.put(item.toJSON());
         }
-        return new JSONObject().put("items", itemsArray);
+        return new JSONObject().put("money", money).put("items", itemsArray);
     }
 }

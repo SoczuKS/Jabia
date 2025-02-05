@@ -36,7 +36,7 @@ public class MinimizeButton extends StackPane {
         getChildren().addAll(background, buttonText);
     }
 
-    void onClick() {
+    public void onClick() {
         animationBuilder()
                 .duration(Duration.seconds(0.33))
                 .translate(root)

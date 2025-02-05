@@ -17,4 +17,8 @@ module Client {
     opens mpks.jabia.client.ui to com.almasb.fxgl.core, javafx.fxml;
     exports mpks.jabia.client.screen;
     opens mpks.jabia.client.screen to com.almasb.fxgl.core, javafx.fxml;
+    exports mpks.jabia.client.character.component;
+    opens mpks.jabia.client.character.component to com.almasb.fxgl.core, javafx.fxml;
+    exports mpks.jabia.client.event;
+    opens mpks.jabia.client.event to com.almasb.fxgl.core, javafx.fxml;
 }

@@ -40,4 +40,8 @@ public class PlayerInventoryView extends Parent {
 
         getChildren().addAll(borderShape, equipmentView, /*inventoryView, sortBtn,*/ minimizeButton);
     }
+
+    public MinimizeButton getMinimizeButton() {
+        return minimizeButton;
+    }
 }

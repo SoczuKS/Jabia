@@ -1,4 +1,4 @@
-package mpks.jabia.client.character;
+package mpks.jabia.client.character.component;
 
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.pathfinding.CellMoveComponent;
@@ -12,34 +12,34 @@ import java.util.Objects;
 import static javafx.util.Duration.seconds;
 
 public class AnimationComponent extends Component {
-    private AnimatedTexture animatedTexture;
+    private final AnimatedTexture animatedTexture;
 
-    private AnimationChannel channelIdleDown;
-    private AnimationChannel channelIdleRight;
-    private AnimationChannel channelIdleUp;
-    private AnimationChannel channelIdleLeft;
+    private final AnimationChannel channelIdleDown;
+    private final AnimationChannel channelIdleRight;
+    private final AnimationChannel channelIdleUp;
+    private final AnimationChannel channelIdleLeft;
 
-    private AnimationChannel channelWalkDown;
-    private AnimationChannel channelWalkRight;
-    private AnimationChannel channelWalkUp;
-    private AnimationChannel channelWalkLeft;
+    private final AnimationChannel channelWalkDown;
+    private final AnimationChannel channelWalkRight;
+    private final AnimationChannel channelWalkUp;
+    private final AnimationChannel channelWalkLeft;
 
-    private AnimationChannel channelCastDown;
-    private AnimationChannel channelCastRight;
-    private AnimationChannel channelCastUp;
-    private AnimationChannel channelCastLeft;
+    private final AnimationChannel channelCastDown;
+    private final AnimationChannel channelCastRight;
+    private final AnimationChannel channelCastUp;
+    private final AnimationChannel channelCastLeft;
 
-    private AnimationChannel channelSlashDown;
-    private AnimationChannel channelSlashRight;
-    private AnimationChannel channelSlashUp;
-    private AnimationChannel channelSlashLeft;
+    private final AnimationChannel channelSlashDown;
+    private final AnimationChannel channelSlashRight;
+    private final AnimationChannel channelSlashUp;
+    private final AnimationChannel channelSlashLeft;
 
-    private AnimationChannel channelShootDown;
-    private AnimationChannel channelShootRight;
-    private AnimationChannel channelShootUp;
-    private AnimationChannel channelShootLeft;
+    private final AnimationChannel channelShootDown;
+    private final AnimationChannel channelShootRight;
+    private final AnimationChannel channelShootUp;
+    private final AnimationChannel channelShootLeft;
 
-    private AnimationChannel channelDeath;
+    private final AnimationChannel channelDeath;
     
     public AnimationComponent(String assetName){
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(assetName)));
@@ -56,8 +56,8 @@ public class AnimationComponent extends Component {
 
         channelCastDown   = new AnimationChannel(image, 7, 64, 64, seconds(0.7), 7 * 2, 7 * 2 + 7 - 1);
         channelCastRight  = new AnimationChannel(image, 7, 64, 64, seconds(0.7), 7 * 3, 7 * 3 + 7 - 1);
-        channelCastUp     = new AnimationChannel(image, 7, 64, 64, seconds(0.7), 7 * 0, 7 * 0 + 7 - 1);
-        channelCastLeft   = new AnimationChannel(image, 7, 64, 64, seconds(0.7), 7 * 1, 7 * 1 + 7 - 1);
+        channelCastUp     = new AnimationChannel(image, 7, 64, 64, seconds(0.7), 0, 7 - 1);
+        channelCastLeft   = new AnimationChannel(image, 7, 64, 64, seconds(0.7), 7, 7 + 7 - 1);
 
         channelSlashDown  = new AnimationChannel(image, 6, 64, 64, seconds(0.6), 6 * 14, 6 * 14 + 6 - 1);
         channelSlashRight = new AnimationChannel(image, 6, 64, 64, seconds(0.6), 6 * 15, 6 * 15 + 6 - 1);
