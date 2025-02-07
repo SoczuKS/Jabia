@@ -4,9 +4,12 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import mpks.jabia.client.Game;
 import mpks.jabia.common.RequestBuilder;
 import mpks.jabia.common.SocketWriter;
@@ -55,6 +58,15 @@ public class LoginScreen extends FXGLMenu {
         });
         loginButton.setTranslateX(uiX + 75);
         loginButton.setTranslateY(250);
+
+        EventHandler<KeyEvent> enterKeyHandler = event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                loginButton.fire();
+            }
+        };
+
+        usernameTextArea.setOnKeyPressed(enterKeyHandler);
+        passwordTextArea.setOnKeyPressed(enterKeyHandler);
 
         getContentRoot().getChildren().addAll(usernameTextArea, passwordTextArea, loginButton);
     }
