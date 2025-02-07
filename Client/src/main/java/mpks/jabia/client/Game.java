@@ -18,6 +18,7 @@ import mpks.jabia.client.screen.LoginScreen;
 import mpks.jabia.client.ui.BasicInfoView;
 import mpks.jabia.client.ui.PlayerInventoryView;
 import mpks.jabia.common.User;
+import mpks.jabia.common.WorldInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class Game extends GameApplication {
     public Socket socket = null;
     public User user = null;
     public Gameplay gameplay = null;
+    public WorldInfo worldInfo = null;
     CharacterEntity userCharacter = null;
 
     public void run(String[] args) {

@@ -27,6 +27,11 @@ public abstract class Entity {
         };
     }
 
+    public static Entity createEntity(JSONObject jsonObject) {
+        EntityType entityType = EntityType.valueOf(jsonObject.getString("entityType"));
+        return createEntity(entityType, jsonObject);
+    }
+
     protected JSONObject baseJSON() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("entityType", entityType);

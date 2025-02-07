@@ -19,6 +19,14 @@ public class WorldInfo {
         loadMapInfo();
     }
 
+    public WorldInfo(JSONObject worldInfo) {
+        this.entities = new ArrayList<>();
+        var entitiesJson = worldInfo.getJSONArray("entities");
+        for (int i = 0; i < entitiesJson.length(); i++) {
+            entities.add(Entity.createEntity(entitiesJson.getJSONObject(i)));
+        }
+    }
+
     public JSONObject toJSON() {
         JSONObject worldInfo = new JSONObject();
         JSONArray entitiesJson = new JSONArray();

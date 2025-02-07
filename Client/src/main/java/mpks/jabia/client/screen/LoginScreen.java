@@ -14,6 +14,7 @@ import mpks.jabia.client.Game;
 import mpks.jabia.common.RequestBuilder;
 import mpks.jabia.common.SocketWriter;
 import mpks.jabia.common.User;
+import mpks.jabia.common.WorldInfo;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -89,6 +90,7 @@ public class LoginScreen extends FXGLMenu {
                     if (json.getString("type").equals("response") && json.getString("action").equals("login")) {
                         if (json.getString("status").equals("success")) {
                             game.user = new User(json.getJSONObject("user"));
+                            game.worldInfo = new WorldInfo(json.getJSONObject("worldInfo"));
                             Platform.runLater(this::fireNewGame);
                         }
                     }
