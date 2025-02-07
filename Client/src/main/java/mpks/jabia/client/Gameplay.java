@@ -47,7 +47,7 @@ public class Gameplay {
         getPlayer().addComponent(new AStarMoveComponent<>(newMap.getGrid()));
 
         getPlayer().getCharacterActionComponent().orderIdle();
-        getPlayer().setPosition(x, y);
+        getPlayer().goToPosition(x, y);
 
         getGameScene().getViewport().setBounds(0, 0, level.getWidth(), level.getHeight());
     }
