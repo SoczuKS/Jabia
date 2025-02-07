@@ -34,8 +34,6 @@ public class JabiaEntityFactory implements EntityFactory {
 
     @Spawns("player")
     public Entity newPlayer(SpawnData data) {
-        data.put("cellX", 0);
-        data.put("cellY", 0);
         data.put("animationAssetName", "/assets/textures/characters/players/local_player.png");
 
         CharacterEntity player = (CharacterEntity) newCharacter(data);

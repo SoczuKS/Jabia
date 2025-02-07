@@ -91,6 +91,8 @@ public class Game extends GameApplication {
 
         SpawnData spawnData = new SpawnData();
         spawnData.put("user", user);
+        spawnData.put("cellX", worldInfo.getSpawnPointX());
+        spawnData.put("cellY", worldInfo.getSpawnPointY());
 
         userCharacter = (CharacterEntity) spawn("player", spawnData);
         spawn("cell_selection");
@@ -100,7 +102,7 @@ public class Game extends GameApplication {
         getGameScene().getViewport().bindToEntity(userCharacter, (double) getAppWidth() / 2, (double) getAppHeight() / 2);
 
         try {
-            gameplay.goToMapWithPosition("map", 2, 6);
+            gameplay.goToMapWithPosition("map", worldInfo.getSpawnPointX(), worldInfo.getSpawnPointY());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

@@ -13,6 +13,8 @@ import java.util.List;
 
 public class WorldInfo {
     private final List<Entity> entities;
+    private int spawnPointX = 0;
+    private int spawnPointY = 0;
 
     public WorldInfo() throws IOException {
         this.entities = new ArrayList<>();
@@ -25,6 +27,9 @@ public class WorldInfo {
         for (int i = 0; i < entitiesJson.length(); i++) {
             entities.add(Entity.createEntity(entitiesJson.getJSONObject(i)));
         }
+        var spawnPoint = worldInfo.getJSONObject("spawnPoint");
+        spawnPointX = spawnPoint.getInt("x");
+        spawnPointY = spawnPoint.getInt("y");
     }
 
     public JSONObject toJSON() {
@@ -34,7 +39,16 @@ public class WorldInfo {
             entitiesJson.put(entity.toJSON());
         }
         worldInfo.put("entities", entitiesJson);
+        worldInfo.put("spawnPoint", new JSONObject().put("x", spawnPointX).put("y", spawnPointY));
         return worldInfo;
+    }
+
+    public int getSpawnPointX() {
+        return spawnPointX;
+    }
+
+    public int getSpawnPointY() {
+        return spawnPointY;
     }
 
     private String readWorldInfoFile() throws IOException {
@@ -73,5 +87,9 @@ public class WorldInfo {
         for (int i = 0; i < chests.length(); i++) {
             entities.add(Entity.createEntity(EntityType.CHEST, chests.getJSONObject(i)));
         }
+
+        var spawnPoint = mapInfo.getJSONObject("spawnPoint");
+        spawnPointX = spawnPoint.getInt("x");
+        spawnPointY = spawnPoint.getInt("y");
     }
 }
