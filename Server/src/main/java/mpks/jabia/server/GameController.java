@@ -1,6 +1,7 @@
 package mpks.jabia.server;
 
 import mpks.jabia.common.User;
+import mpks.jabia.common.WorldInfo;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -8,10 +9,12 @@ import java.sql.SQLException;
 public class GameController {
     private final DatabaseConnector databaseConnector;
     private final Logger logger;
+    private final WorldInfo worldInfo;
 
-    GameController(Logger logger) {
+    GameController(Logger logger) throws IOException {
         this.logger = logger;
         databaseConnector = new DatabaseConnector(logger);
+        worldInfo = new WorldInfo();
     }
 
     public void connectDatabase() throws SQLException {
@@ -33,5 +36,9 @@ public class GameController {
         }
 
         return user;
+    }
+
+    public WorldInfo getWorldInfo() {
+        return worldInfo;
     }
 }

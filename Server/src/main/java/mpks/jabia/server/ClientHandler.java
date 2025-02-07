@@ -20,15 +20,12 @@ public class ClientHandler implements Runnable {
     Server server;
     User user = null;
     boolean clientConnected = true;
-    WorldInfo worldInfo;
 
-
-    ClientHandler(Socket clientSocket, GameController gameController, Logger logger, Server server, WorldInfo worldInfo) {
+    ClientHandler(Socket clientSocket, GameController gameController, Logger logger, Server server) {
         this.clientSocket = clientSocket;
         this.gameController = gameController;
         this.logger = logger;
         this.server = server;
-        this.worldInfo = worldInfo;
     }
 
     @Override
@@ -81,7 +78,7 @@ public class ClientHandler implements Runnable {
         String password = json.getString("password");
 
         user = gameController.login(username, password);
-        String response = ResponseBuilder.buildLoginResponse(user, worldInfo.loadMapInfo());
+        String response = ResponseBuilder.buildLoginResponse(user, gameController.getWorldInfo());
         SocketWriter.write(clientSocket, response);
         logger.write(clientSocket, "Sent: " + response);
     }
