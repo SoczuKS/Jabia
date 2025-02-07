@@ -3,7 +3,7 @@ package mpks.jabia.common;
 import org.json.JSONObject;
 
 public class ResponseBuilder {
-    public static String buildLoginResponse(User user) {
+    public static String buildLoginResponse(User user, JSONObject worldInfo) {
         boolean success = user != null;
         JSONObject response = new JSONObject();
         response.put("type", "response");
@@ -11,6 +11,7 @@ public class ResponseBuilder {
         response.put("status", success ? "success" : "error");
         if (success) {
             response.put("user", user.toJSON());
+            response.put("worldInfo", worldInfo);
         }
         return response.toString();
     }
