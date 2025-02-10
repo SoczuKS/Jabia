@@ -32,6 +32,22 @@ public abstract class Entity {
         return createEntity(entityType, jsonObject);
     }
 
+    public EntityType getEntityType() {
+        return entityType;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     protected JSONObject baseJSON() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("entityType", entityType);

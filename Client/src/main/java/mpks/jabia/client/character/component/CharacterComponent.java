@@ -8,10 +8,17 @@ public class CharacterComponent extends Component {
     private final User user;
 
     public CharacterComponent(SpawnData data) {
-        this.user = data.get("user");
+        if (data.hasKey("user")) {
+            this.user = data.get("user");
+        } else {
+            this.user = null;
+        }
     }
 
     public String getUsername() {
-        return user.getUsername();
+        if (user != null) {
+            return user.getUsername();
+        }
+        return "";
     }
 }

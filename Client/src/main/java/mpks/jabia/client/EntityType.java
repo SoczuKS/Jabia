@@ -8,6 +8,6 @@ public enum EntityType {
     PORTAL,
     WALKABLE,
     ITEM,
-    TREASURE_CHEST,
+    CHEST,
     CELL_SELECTION,
 }

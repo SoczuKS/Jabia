@@ -5,7 +5,6 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.LoadingScene;
 import com.almasb.fxgl.app.scene.SceneFactory;
-import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.SpawnData;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -17,6 +16,7 @@ import mpks.jabia.client.screen.LoadingScreen;
 import mpks.jabia.client.screen.LoginScreen;
 import mpks.jabia.client.ui.BasicInfoView;
 import mpks.jabia.client.ui.PlayerInventoryView;
+import mpks.jabia.common.Entity;
 import mpks.jabia.common.User;
 import mpks.jabia.common.WorldInfo;
 import org.jetbrains.annotations.NotNull;
@@ -89,20 +89,11 @@ public class Game extends GameApplication {
         getGameScene().setBackgroundColor(Color.BLACK);
         getGameWorld().addEntityFactory(new JabiaEntityFactory(this));
 
-        SpawnData spawnData = new SpawnData();
-        spawnData.put("user", user);
-        spawnData.put("cellX", worldInfo.getSpawnPointX());
-        spawnData.put("cellY", worldInfo.getSpawnPointY());
-
-        userCharacter = (CharacterEntity) spawn("player", spawnData);
-        spawn("cell_selection");
-
-        getGameScene().getViewport().setLazy(true);
-        getGameScene().getViewport().setZoom(1.0);
-        getGameScene().getViewport().bindToEntity(userCharacter, (double) getAppWidth() / 2, (double) getAppHeight() / 2);
+        setupPlayer();
 
         try {
             gameplay.goToMapWithPosition("map", worldInfo.getSpawnPointX(), worldInfo.getSpawnPointY());
+            setupGameWorld();
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -110,13 +101,6 @@ public class Game extends GameApplication {
 
     @Override
     protected void initPhysics() {
-        FXGL.onCollisionCollectible(EntityType.PLAYER, EntityType.ITEM, (entity) -> {
-
-        });
-
-        FXGL.onCollisionCollectible(EntityType.PLAYER, EntityType.TREASURE_CHEST, (entity) -> {
-
-        });
     }
 
     @Override
@@ -151,5 +135,59 @@ public class Game extends GameApplication {
     @Override
     protected void onUpdate(double timePerFrame) {
         gameplay.getCurrentMap().onUpdate(timePerFrame);
+    }
+
+    private void setupGameWorld() {
+        setupChests();
+        setupMonsters();
+        setupNPCs();
+
+        spawn("cell_selection");
+
+        getGameScene().getViewport().setLazy(true);
+        getGameScene().getViewport().setZoom(1.0);
+        getGameScene().getViewport().bindToEntity(userCharacter, (double) getAppWidth() / 2, (double) getAppHeight() / 2);
+    }
+
+    private void setupPlayer() {
+        SpawnData spawnData = new SpawnData();
+        spawnData.put("user", user);
+        spawnData.put("cellX", worldInfo.getSpawnPointX());
+        spawnData.put("cellY", worldInfo.getSpawnPointY());
+
+        userCharacter = (CharacterEntity) spawn("player", spawnData);
+    }
+
+    private void setupMonsters() {
+        for (Entity monster : worldInfo.getMonsters()) {
+            SpawnData spawnData = new SpawnData();
+            spawnData.put("monster", monster);
+            spawnData.put("cellX", monster.getX());
+            spawnData.put("cellY", monster.getY());
+
+            spawn("monster", spawnData);
+        }
+    }
+
+    private void setupNPCs() {
+        for (Entity npc : worldInfo.getNPCs()) {
+            SpawnData spawnData = new SpawnData();
+            spawnData.put("npc", npc);
+            spawnData.put("cellX", npc.getX());
+            spawnData.put("cellY", npc.getY());
+
+            spawn("npc", spawnData);
+        }
+    }
+
+    private void setupChests() {
+        for (Entity chest : worldInfo.getChests()) {
+            SpawnData spawnData = new SpawnData(chest.getX() * mpks.jabia.client.GameSettings.tileSize, chest.getY() * mpks.jabia.client.GameSettings.tileSize);
+            spawnData.put("chest", chest);
+            spawnData.put("cellX", chest.getX());
+            spawnData.put("cellY", chest.getY());
+
+            spawn("chest", spawnData);
+        }
     }
 }

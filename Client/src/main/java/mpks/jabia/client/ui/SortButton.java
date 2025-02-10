@@ -4,6 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.scene.Parent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import mpks.jabia.client.GameSettings;
 
 public class SortButton extends Parent {
     private InventoryView inventoryView;
@@ -11,7 +12,7 @@ public class SortButton extends Parent {
     public SortButton(InventoryView inventoryView) {
         this.inventoryView = inventoryView;
 
-        Rectangle bg = new Rectangle(32.0, 32.0);
+        Rectangle bg = new Rectangle(GameSettings.tileSize, GameSettings.tileSize);
         bg.setArcWidth(10.0);
         bg.setArcHeight(10.0);
         bg.fillProperty().bind(Bindings.when(hoverProperty()).then(Color.DARKGRAY).otherwise(Color.LIGHTGRAY));

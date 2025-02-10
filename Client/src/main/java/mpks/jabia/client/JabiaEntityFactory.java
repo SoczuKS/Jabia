@@ -8,19 +8,27 @@ import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
 import com.almasb.fxgl.entity.components.CollidableComponent;
+import com.almasb.fxgl.entity.components.IDComponent;
 import com.almasb.fxgl.entity.components.IrremovableComponent;
 import com.almasb.fxgl.entity.state.StateComponent;
 import com.almasb.fxgl.pathfinding.CellMoveComponent;
+import com.almasb.fxgl.pathfinding.CellState;
+import com.almasb.fxgl.pathfinding.astar.AStarCell;
 import com.almasb.fxgl.pathfinding.astar.AStarMoveComponent;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
+import com.almasb.fxgl.texture.Texture;
 import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
+import javafx.scene.ImageCursor;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import mpks.jabia.client.character.*;
+import mpks.jabia.client.character.CharacterEntity;
 import mpks.jabia.client.character.component.*;
 import mpks.jabia.client.component.CellSelectionComponent;
+
+import java.util.Objects;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 import static mpks.jabia.client.EntityType.*;
@@ -54,29 +62,74 @@ public class JabiaEntityFactory implements EntityFactory {
 
     @Spawns("npc")
     public Entity newNpc(SpawnData data) {
-        return null;
+        mpks.jabia.common.Entity entity = data.get("npc");
+        data.put("animationAssetName", entity.getEntityType() == mpks.jabia.common.EntityType.TRADER ? "/assets/textures/characters/npcs/coragh.png" : "/assets/textures/characters/npcs/charles.png");
+
+        CharacterEntity npc = (CharacterEntity) newCharacter(data);
+
+        npc.setType(NPC);
+
+        npc.addComponent(new IDComponent("NPC", entity.getId()));
+
+        npc.getViewComponent().getParent().setCursor(new ImageCursor(new Image(Objects.requireNonNull(getClass().getResourceAsStream(entity.getEntityType() == mpks.jabia.common.EntityType.TRADER ? "/assets/textures/ui/cursors/chat.png" : "/assets/textures/ui/cursors/question.png"))), GameSettings.cursorSize, GameSettings.cursorSize));
+        npc.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (game.gameplay.getPlayer().distance(data.get("cellX"), data.get("cellY")) < 2) {
+                if (entity.getEntityType() == mpks.jabia.common.EntityType.TRADER) {
+                    getNotificationService().pushNotification("TODO: trader");
+                } else {
+                    getNotificationService().pushNotification("TODO: dialogue");
+                }
+            }
+        });
+
+        return npc;
     }
 
-    @Spawns("treasure_chest")
+    @Spawns("chest")
     public Entity newTreasureChest(SpawnData data) {
-        return null;
+        int cellX = data.get("cellX");
+        int cellY = data.get("cellY");
+
+        AStarCell cell = game.gameplay.getCurrentMap().getGrid().get(cellX, cellY);
+        cell.setState(CellState.NOT_WALKABLE);
+
+        return entityBuilder()
+                .at(cellX * GameSettings.tileSize, cellY * GameSettings.tileSize)
+                .type(CHEST)
+                .viewWithBBox(new Texture(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/assets/textures/chest_closed.png")))))
+                .collidable()
+                .with("cell", cell)
+                .onClick(entity -> {
+                    if (game.gameplay.getPlayer().distance(cellX, cellY) < 2) {
+                        // TODO: collect
+
+                        entity.getViewComponent().clearChildren();
+                        entity.getViewComponent().addChild(new Texture(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/assets/textures/chest_open_empty.png")))));
+                    }
+                })
+                .onNotActive((entity) -> cell.setState(CellState.WALKABLE))
+                .build();
     }
 
     @Spawns("monster")
     public Entity newMonster(SpawnData data) {
-        return null;
-    }
+        mpks.jabia.common.Entity entity = data.get("monster");
+        data.put("animationAssetName", "/assets/textures/characters/enemies/skeleton_warrior.png");
 
-    @Spawns("portal")
-    public Entity newPortal(SpawnData data) {
-        double width = ((Number) data.get("width")).doubleValue();
-        double height = ((Number) data.get("height")).doubleValue();
+        CharacterEntity monster = (CharacterEntity) newCharacter(data);
 
-        Rectangle2D interactionCollisionBox = new Rectangle2D(data.getX() + 32, data.getY() + 32, width - 32, height - 32);
-        return entityBuilder(data).type(PORTAL).bbox(new HitBox(BoundingShape.box(width, height)))
-                .with("interactionCollisionBox", interactionCollisionBox)
-                //TODO:.with(new PortalComponent(data.get("mapName"), data.get("toX"), data.get("toY")))
-                .build();
+        monster.setType(MONSTER);
+
+        monster.addComponent(new IDComponent("monster", entity.getId()));
+
+        monster.getViewComponent().getParent().setCursor(new ImageCursor(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/assets/textures/ui/cursors/attack.png"))), GameSettings.cursorSize, GameSettings.cursorSize));
+        monster.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (game.gameplay.getPlayer().distance(data.get("cellX"), data.get("cellY")) < 2) {
+                getNotificationService().pushNotification("TODO: fight");
+            }
+        });
+
+        return monster;
     }
 
     @Spawns("walkable")
@@ -86,8 +139,8 @@ public class JabiaEntityFactory implements EntityFactory {
 
         Entity entity = entityBuilder(data).type(WALKABLE).bbox(new HitBox(BoundingShape.box(width, height)))
                 .onClick((e) -> {
-                    int targetX = (int) (FXGL.getInput().getMouseXWorld() / 32);
-                    int targetY = (int) (FXGL.getInput().getMouseYWorld() / 32);
+                    int targetX = (int) (FXGL.getInput().getMouseXWorld() / GameSettings.tileSize);
+                    int targetY = (int) (FXGL.getInput().getMouseYWorld() / GameSettings.tileSize);
 
                     getGameWorld().getSingleton(CELL_SELECTION)
                             .getComponent(CellSelectionComponent.class)
@@ -108,7 +161,7 @@ public class JabiaEntityFactory implements EntityFactory {
 
     @Spawns("cell_selection")
     public Entity newCellSelection(SpawnData data) {
-        Rectangle view = new Rectangle(32, 32, null);
+        Rectangle view = new Rectangle(GameSettings.tileSize, GameSettings.tileSize, null);
         view.setStroke(Color.BLACK);
 
         animationBuilder()
@@ -137,12 +190,12 @@ public class JabiaEntityFactory implements EntityFactory {
         CharacterEntity characterEntity = new CharacterEntity();
         data.getData().forEach(characterEntity::setProperty);
 
-        characterEntity.setLocalAnchor(new Point2D(32, 54));
-        characterEntity.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.box(64, 64)));
+        characterEntity.setLocalAnchor(new Point2D(GameSettings.spriteSize / 2.0, GameSettings.spriteSize - 10));
+        characterEntity.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.box(GameSettings.spriteSize, GameSettings.spriteSize)));
 
         characterEntity.addComponent(new CollidableComponent(true));
         characterEntity.addComponent(new StateComponent());
-        characterEntity.addComponent(new CellMoveComponent(32,32,32 * 4.0));
+        characterEntity.addComponent(new CellMoveComponent(GameSettings.tileSize, GameSettings.tileSize, GameSettings.tileSize * GameSettings.movementSpeed));
         characterEntity.addComponent(new AStarMoveComponent<>(new LazyValue<>(() -> game.gameplay.getCurrentMap().getGrid())));
         characterEntity.addComponent(new AnimationComponent(data.get("animationAssetName")));
         characterEntity.addComponent(new CharacterComponent(data));

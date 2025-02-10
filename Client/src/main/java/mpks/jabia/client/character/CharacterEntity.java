@@ -1,6 +1,7 @@
 package mpks.jabia.client.character;
 
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.pathfinding.CellMoveComponent;
 import com.almasb.fxgl.pathfinding.astar.AStarMoveComponent;
 import mpks.jabia.client.EntityType;
 import mpks.jabia.client.character.component.AnimationComponent;
@@ -23,6 +24,10 @@ public class CharacterEntity extends Entity {
         return getComponent(CharacterComponent.class);
     }
 
+    CellMoveComponent getCellMoveComponent() {
+        return getComponent(CellMoveComponent.class);
+    }
+
     public void goToPosition(int x, int y) {
         getComponent(AStarMoveComponent.class).stopMovementAt(x, y);
     }
@@ -33,5 +38,9 @@ public class CharacterEntity extends Entity {
 
     public String getUsername() {
         return getCharacterComponent().getUsername();
+    }
+
+    public int distance(int cellX, int cellY) {
+        return Math.abs(this.getCellMoveComponent().getCellX() - cellX) + Math.abs(this.getCellMoveComponent().getCellY() - cellY);
     }
 }

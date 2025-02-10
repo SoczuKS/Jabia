@@ -9,6 +9,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import mpks.jabia.client.GameSettings;
 import mpks.jabia.client.Gameplay;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.animationBuilder;
@@ -23,8 +24,8 @@ public class CellSelectionComponent extends Component {
 
     @Override
     public void onUpdate(double timePerFrame) {
-        int cellX = (int) (getInput().getMouseXWorld() / 32);
-        int cellY = (int) (getInput().getMouseYWorld() / 32);
+        int cellX = (int) (getInput().getMouseXWorld() / GameSettings.tileSize);
+        int cellY = (int) (getInput().getMouseYWorld() / GameSettings.tileSize);
 
         AStarGrid grid = gameplay.getCurrentMap().getGrid();
 
@@ -35,12 +36,12 @@ public class CellSelectionComponent extends Component {
         AStarCell cell = grid.get(cellX, cellY);
 
         if (cell.isWalkable()) {
-            entity.setPosition(cellX * 32, cellY * 32);
+            entity.setPosition(cellX * GameSettings.tileSize, cellY * GameSettings.tileSize);
         }
     }
 
     public void onClick() {
-        Rectangle view = new Rectangle(32, 32, null);
+        Rectangle view = new Rectangle(GameSettings.tileSize, GameSettings.tileSize, null);
         view.setStroke(Color.GOLD);
 
         entity.getViewComponent().addChild(view);

@@ -4,6 +4,7 @@ import com.almasb.fxgl.entity.component.Component;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import mpks.jabia.client.GameSettings;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 
@@ -16,8 +17,8 @@ public class TiledMapLayerOptimizerComponent extends Component {
     private ImageView mapView;
 
     public TiledMapLayerOptimizerComponent() {
-        width = (int) (getAppWidth() / getGameScene().getViewport().getZoom() + 32 * marginTiles * 2);
-        height = (int) (getAppHeight() / getGameScene().getViewport().getZoom() + 32 * marginTiles * 2);
+        width = (int) (getAppWidth() / getGameScene().getViewport().getZoom() + GameSettings.tileSize * marginTiles * 2);
+        height = (int) (getAppHeight() / getGameScene().getViewport().getZoom() + GameSettings.tileSize * marginTiles * 2);
 
         WritableImage frontBuffer = new WritableImage(width, height);
         frontBufferView = new ImageView(frontBuffer);
@@ -35,37 +36,37 @@ public class TiledMapLayerOptimizerComponent extends Component {
 
         Point2D viewportOrigin = getGameScene().getViewport().getOrigin();
 
-        int srcX = (int) Math.max((viewportOrigin.getX() - 32 * marginTiles), 0);
-        int srcY = (int) Math.max((viewportOrigin.getY() - 32 * marginTiles), 0);
+        int srcX = (int) Math.max((viewportOrigin.getX() - GameSettings.tileSize * marginTiles), 0);
+        int srcY = (int) Math.max((viewportOrigin.getY() - GameSettings.tileSize * marginTiles), 0);
 
         ((WritableImage) frontBufferView.getImage()).getPixelWriter().setPixels(
-                srcX == 0 ? marginTiles * 32 : 0,
-                srcY == 0 ? marginTiles * 32 : 0,
-                srcX == 0 ? width - marginTiles * 32 : width,
-                srcY == 0 ? height - marginTiles * 32 : height,
+                srcX == 0 ? marginTiles * GameSettings.tileSize : 0,
+                srcY == 0 ? marginTiles * GameSettings.tileSize : 0,
+                srcX == 0 ? width - marginTiles * GameSettings.tileSize : width,
+                srcY == 0 ? height - marginTiles * GameSettings.tileSize : height,
                 mapView.getImage().getPixelReader(),
                 srcX, srcY
         );
 
-        frontBufferView.setLayoutX(viewportOrigin.getX() - 32 * marginTiles);
-        frontBufferView.setLayoutY(viewportOrigin.getY() - 32 * marginTiles);
-        backBufferView.setLayoutX(viewportOrigin.getX() - 32 * marginTiles);
-        backBufferView.setLayoutY(viewportOrigin.getY() - 32 * marginTiles);
+        frontBufferView.setLayoutX(viewportOrigin.getX() - GameSettings.tileSize * marginTiles);
+        frontBufferView.setLayoutY(viewportOrigin.getY() - GameSettings.tileSize * marginTiles);
+        backBufferView.setLayoutX(viewportOrigin.getX() - GameSettings.tileSize * marginTiles);
+        backBufferView.setLayoutY(viewportOrigin.getY() - GameSettings.tileSize * marginTiles);
     }
 
     @Override
     public void onUpdate(double timePerFrame) {
         Point2D viewportOrigin = getGameScene().getViewport().getOrigin();
 
-        int MIN_MARGIN = 2;
-        int MIN_MARGIN_PIXELS = MIN_MARGIN * 32;
-        if (frontBufferView.getLayoutX() + width - (viewportOrigin.getX() + getAppWidth() / getGameScene().getViewport().getZoom()) < MIN_MARGIN_PIXELS) {
+        int minMargin = 2;
+        int minMarginPixels = minMargin * GameSettings.tileSize;
+        if (frontBufferView.getLayoutX() + width - (viewportOrigin.getX() + getAppWidth() / getGameScene().getViewport().getZoom()) < minMarginPixels) {
             flipBuffers();
-        } else if (viewportOrigin.getX() - frontBufferView.getLayoutX() < MIN_MARGIN_PIXELS) {
+        } else if (viewportOrigin.getX() - frontBufferView.getLayoutX() < minMarginPixels) {
             flipBuffers();
-        } else if (viewportOrigin.getY() - frontBufferView.getLayoutY() < MIN_MARGIN_PIXELS) {
+        } else if (viewportOrigin.getY() - frontBufferView.getLayoutY() < minMarginPixels) {
             flipBuffers();
-        } else if (frontBufferView.getLayoutY() + height - (viewportOrigin.getY() + getAppHeight() / getGameScene().getViewport().getZoom()) < MIN_MARGIN_PIXELS) {
+        } else if (frontBufferView.getLayoutY() + height - (viewportOrigin.getY() + getAppHeight() / getGameScene().getViewport().getZoom()) < minMarginPixels) {
             flipBuffers();
         }
     }
@@ -73,8 +74,8 @@ public class TiledMapLayerOptimizerComponent extends Component {
     private void flipBuffers() {
         Point2D viewportOrigin = getGameScene().getViewport().getOrigin();
 
-        int srcX = (int) (viewportOrigin.getX() - 32 * marginTiles);
-        int srcY = (int) (viewportOrigin.getY() - 32 * marginTiles);
+        int srcX = (int) (viewportOrigin.getX() - GameSettings.tileSize * marginTiles);
+        int srcY = (int) (viewportOrigin.getY() - GameSettings.tileSize * marginTiles);
 
         int dstX = srcX < 0 ? -srcX : 0;
         int dstY = srcY < 0 ? -srcY : 0;
@@ -99,7 +100,7 @@ public class TiledMapLayerOptimizerComponent extends Component {
         frontBufferView = backBufferView;
         backBufferView = tmp;
 
-        frontBufferView.setLayoutX(viewportOrigin.getX() - 32 * marginTiles);
-        frontBufferView.setLayoutY(viewportOrigin.getY() - 32 * marginTiles);
+        frontBufferView.setLayoutX(viewportOrigin.getX() - GameSettings.tileSize * marginTiles);
+        frontBufferView.setLayoutY(viewportOrigin.getY() - GameSettings.tileSize * marginTiles);
     }
 }

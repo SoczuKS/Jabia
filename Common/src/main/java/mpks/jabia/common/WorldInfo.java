@@ -51,6 +51,22 @@ public class WorldInfo {
         return spawnPointY;
     }
 
+    public List<Entity> getEntities() {
+        return entities;
+    }
+
+    public List<Entity> getMonsters() {
+        return entities.stream().filter(entity -> entity.getEntityType() == EntityType.MONSTER).toList();
+    }
+
+    public List<Entity> getChests() {
+        return entities.stream().filter(entity -> entity.getEntityType() == EntityType.CHEST).toList();
+    }
+
+    public List<Entity> getNPCs() {
+        return entities.stream().filter(entity -> entity.getEntityType() == EntityType.TRADER || entity.getEntityType() == EntityType.NPC).toList();
+    }
+
     private String readWorldInfoFile() throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream("map_info.json");
