@@ -19,6 +19,7 @@ import mpks.jabia.client.ui.PlayerInventoryView;
 import mpks.jabia.common.*;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
+import static javafx.application.Platform.runLater;
 import static mpks.jabia.client.GameSettings.windowWidth;
 import static mpks.jabia.common.NetConfig.SERVER_ADDRESS;
 
@@ -40,6 +42,7 @@ public class Game extends GameApplication {
     CharacterEntity userCharacter = null;
     List<com.almasb.fxgl.entity.Entity> otherPlayers = new ArrayList<>();
     public JSONArray otherPlayersInfo = null;
+    boolean running = true;
 
     public void run(String[] args) {
         launch(args);
@@ -48,10 +51,22 @@ public class Game extends GameApplication {
     public void connectToServer() {
         try {
             socket = new Socket(SERVER_ADDRESS, 34527);
-            socket.setSoTimeout(10000);
+            socket.setSoTimeout(5 * 60 * 1000);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void addNewOtherPlayer(JSONObject json) {
+        json.remove("type");
+        json.remove("action");
+
+        SpawnData spawnData = new SpawnData();
+        spawnData.put("otherPlayer", json);
+        spawnData.put("cellX", json.getInt("x"));
+        spawnData.put("cellY", json.getInt("y"));
+
+        runLater(() -> otherPlayers.add(spawn("other_player", spawnData)));
     }
 
     public void informServerMove(int x, int y) {
@@ -105,6 +120,8 @@ public class Game extends GameApplication {
         try {
             gameplay.goToMapWithPosition("map", worldInfo.getSpawnPointX(), worldInfo.getSpawnPointY());
             setupGameWorld();
+
+            new Thread(new ServerListener(this)).start();
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
