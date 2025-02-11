@@ -27,6 +27,7 @@ import javafx.scene.shape.Rectangle;
 import mpks.jabia.client.character.CharacterEntity;
 import mpks.jabia.client.character.component.*;
 import mpks.jabia.client.component.CellSelectionComponent;
+import org.json.JSONObject;
 
 import java.util.Objects;
 
@@ -57,7 +58,15 @@ public class JabiaEntityFactory implements EntityFactory {
 
     @Spawns("other_player")
     public Entity newOtherPlayer(SpawnData data) {
-        return null;
+        String username = ((JSONObject)data.get("otherPlayer")).getString("username");
+        data.put("animationAssetName", "/assets/textures/characters/players/other_player.png");
+
+        CharacterEntity otherPlayer = (CharacterEntity) newCharacter(data);
+
+        otherPlayer.setType(OTHER_PLAYER);
+        otherPlayer.addComponent(new IDComponent(username, 0));
+
+        return otherPlayer;
     }
 
     @Spawns("npc")
@@ -149,6 +158,8 @@ public class JabiaEntityFactory implements EntityFactory {
                     getGameWorld().getSingleton(PLAYER)
                             .getComponent(CharacterActionComponent.class)
                             .orderMove(targetX, targetY);
+
+                    game.informServerMove(targetX, targetY);
                 }).build();
         entity.getViewComponent().addChild(new Rectangle(width, height, Color.TRANSPARENT));
         return entity;

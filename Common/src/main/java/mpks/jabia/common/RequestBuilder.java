@@ -12,4 +12,26 @@ public class RequestBuilder {
 
         return request.toString();
     }
+
+    public static String buildPlayerJoinRequest(String username, int x, int y) {
+        JSONObject request = new JSONObject();
+        request.put("type", "request");
+        request.put("action", "playerJoin");
+        request.put("username", username);
+        request.put("x", x);
+        request.put("y", y);
+
+        return request.toString();
+    }
+
+    public static String buildMoveRequest(String username, int x, int y) {
+        JSONObject request = new JSONObject();
+        request.put("type", "request");
+        request.put("action", "move");
+        request.put("username", username);
+        request.put("x", x);
+        request.put("y", y);
+
+        return request.toString();
+    }
 }

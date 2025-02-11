@@ -16,14 +16,15 @@ import mpks.jabia.client.screen.LoadingScreen;
 import mpks.jabia.client.screen.LoginScreen;
 import mpks.jabia.client.ui.BasicInfoView;
 import mpks.jabia.client.ui.PlayerInventoryView;
-import mpks.jabia.common.Entity;
-import mpks.jabia.common.User;
-import mpks.jabia.common.WorldInfo;
+import mpks.jabia.common.*;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -37,6 +38,8 @@ public class Game extends GameApplication {
     public Gameplay gameplay = null;
     public WorldInfo worldInfo = null;
     CharacterEntity userCharacter = null;
+    List<com.almasb.fxgl.entity.Entity> otherPlayers = new ArrayList<>();
+    public JSONArray otherPlayersInfo = null;
 
     public void run(String[] args) {
         launch(args);
@@ -46,6 +49,14 @@ public class Game extends GameApplication {
         try {
             socket = new Socket(SERVER_ADDRESS, 34527);
             socket.setSoTimeout(10000);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void informServerMove(int x, int y) {
+        try {
+            SocketWriter.write(socket, RequestBuilder.buildMoveRequest(user.getUsername(), x, y));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -141,6 +152,7 @@ public class Game extends GameApplication {
         setupChests();
         setupMonsters();
         setupNPCs();
+        setupOtherPlayers();
 
         spawn("cell_selection");
 
@@ -188,6 +200,21 @@ public class Game extends GameApplication {
             spawnData.put("cellY", chest.getY());
 
             spawn("chest", spawnData);
+        }
+    }
+
+    private void setupOtherPlayers() {
+        for (int i = 0; i < otherPlayersInfo.length(); i++) {
+            try {
+                SpawnData spawnData = new SpawnData();
+                spawnData.put("otherPlayer", otherPlayersInfo.getJSONObject(i));
+                spawnData.put("cellX", otherPlayersInfo.getJSONObject(i).getInt("x"));
+                spawnData.put("cellY", otherPlayersInfo.getJSONObject(i).getInt("y"));
+
+                otherPlayers.add(spawn("other_player", spawnData));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

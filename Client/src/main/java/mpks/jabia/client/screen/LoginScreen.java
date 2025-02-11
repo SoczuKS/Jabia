@@ -91,6 +91,7 @@ public class LoginScreen extends FXGLMenu {
                         if (json.getString("status").equals("success")) {
                             game.user = new User(json.getJSONObject("user"));
                             game.worldInfo = new WorldInfo(json.getJSONObject("worldInfo"));
+                            game.otherPlayersInfo = json.getJSONArray("currentUsers");
                             Platform.runLater(this::fireNewGame);
                         }
                     }

@@ -1,8 +1,10 @@
 package mpks.jabia.server;
 
+import mpks.jabia.common.RequestBuilder;
 import mpks.jabia.common.ResponseBuilder;
 import mpks.jabia.common.SocketWriter;
 import mpks.jabia.common.User;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -20,12 +22,16 @@ public class ClientHandler implements Runnable {
     Server server;
     User user = null;
     boolean clientConnected = true;
+    int x;
+    int y;
 
     ClientHandler(Socket clientSocket, GameController gameController, Logger logger, Server server) {
         this.clientSocket = clientSocket;
         this.gameController = gameController;
         this.logger = logger;
         this.server = server;
+        x = gameController.worldInfo.getSpawnPointX();
+        y = gameController.worldInfo.getSpawnPointY();
     }
 
     @Override
@@ -70,6 +76,13 @@ public class ClientHandler implements Runnable {
         switch (json.getString("action")) {
             case "login":
                 processLogin(json);
+                break;
+
+            case "move":
+                x = json.getInt("x");
+                y = json.getInt("y");
+                server.broadcast(json.toString(), user.getUsername());
+                break;
         }
     }
 
@@ -78,8 +91,33 @@ public class ClientHandler implements Runnable {
         String password = json.getString("password");
 
         user = gameController.login(username, password);
-        String response = ResponseBuilder.buildLoginResponse(user, gameController.getWorldInfo());
+
+        JSONArray currentUsers = new JSONArray();
+        for (ClientHandler clientHandler : server.clientHandlers) {
+            if (clientHandler.user != null && !clientHandler.user.getUsername().equals(username)) {
+                JSONObject user = new JSONObject();
+                user.put("username", clientHandler.user.getUsername());
+                user.put("x", clientHandler.x);
+                user.put("y", clientHandler.y);
+                currentUsers.put(user);
+            }
+        }
+
+        String response = ResponseBuilder.buildLoginResponse(user, gameController.getWorldInfo(), currentUsers);
         SocketWriter.write(clientSocket, response);
         logger.write(clientSocket, "Sent: " + response);
+
+        if (user != null) {
+            server.broadcast(RequestBuilder.buildPlayerJoinRequest(user.getUsername(), x, y), user.getUsername());
+        }
+    }
+
+    public void sendMessage(String message) {
+        try {
+            SocketWriter.write(clientSocket, message);
+            logger.write(clientSocket, "Sent: " + message);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class GameController {
     private final DatabaseConnector databaseConnector;
     private final Logger logger;
-    private final WorldInfo worldInfo;
+    final WorldInfo worldInfo;
 
     GameController(Logger logger) throws IOException {
         this.logger = logger;
