@@ -6,11 +6,13 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.LoadingScene;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.entity.SpawnData;
+import com.almasb.fxgl.entity.components.IDComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import mpks.jabia.client.character.CharacterEntity;
+import mpks.jabia.client.character.component.CharacterActionComponent;
 import mpks.jabia.client.event.EventHandler;
 import mpks.jabia.client.screen.LoadingScreen;
 import mpks.jabia.client.screen.LoginScreen;
@@ -39,9 +41,9 @@ public class Game extends GameApplication {
     public User user = null;
     public Gameplay gameplay = null;
     public WorldInfo worldInfo = null;
+    public JSONArray otherPlayersInfo = null;
     CharacterEntity userCharacter = null;
     List<com.almasb.fxgl.entity.Entity> otherPlayers = new ArrayList<>();
-    public JSONArray otherPlayersInfo = null;
     boolean running = true;
 
     public void run(String[] args) {
@@ -231,6 +233,18 @@ public class Game extends GameApplication {
                 otherPlayers.add(spawn("other_player", spawnData));
             } catch (Exception e) {
                 throw new RuntimeException(e);
+            }
+        }
+    }
+
+    void updateOtherPlayerPosition(JSONObject json) {
+        var movingUsername = json.getString("username");
+        for (com.almasb.fxgl.entity.Entity otherPlayer : otherPlayers) {
+            if (otherPlayer.getComponent(IDComponent.class).getName().equals(movingUsername)) {
+                int targetX = json.getInt("x");
+                int targetY = json.getInt("y");
+                otherPlayer.getComponent(CharacterActionComponent.class).orderMove(targetX, targetY);
+                break;
             }
         }
     }

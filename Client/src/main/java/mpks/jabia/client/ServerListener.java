@@ -36,6 +36,7 @@ public class ServerListener implements Runnable {
         String action = json.getString("action");
         switch (action) {
             case "playerJoin" -> game.addNewOtherPlayer(json);
+            case "move" -> game.updateOtherPlayerPosition(json);
         }
     }
 }
