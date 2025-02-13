@@ -49,7 +49,4 @@ public class Map implements EntityWorldListener {
     @Override
     public void onEntityRemoved(Entity entity) {
     }
-
-    public void onUpdate(double tpf) {
-    }
 }

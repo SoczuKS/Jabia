@@ -93,7 +93,6 @@ public class Game extends GameApplication {
         settings.setHeightFromRatio(16.0 / 9.0);
         settings.setTitle("Jabia");
         settings.setVersion("0.0.1");
-        //settings.getCSSList().add("jabia.css");
         settings.setMainMenuEnabled(true);
         settings.setSceneFactory(new SceneFactory() {
             @Override
@@ -138,10 +137,6 @@ public class Game extends GameApplication {
     }
 
     @Override
-    protected void initPhysics() {
-    }
-
-    @Override
     protected void initUI() {
         getGameScene().setUIMouseTransparent(false);
         Image cursor = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/assets/textures/ui/cursors/main.png")));
@@ -168,11 +163,6 @@ public class Game extends GameApplication {
                     .forEach(node -> ((PlayerInventoryView) node).getMinimizeButton().onClick());
             return null;
         });
-    }
-
-    @Override
-    protected void onUpdate(double timePerFrame) {
-        gameplay.getCurrentMap().onUpdate(timePerFrame);
     }
 
     private void setupGameWorld() {

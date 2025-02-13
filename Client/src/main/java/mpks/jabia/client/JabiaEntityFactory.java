@@ -81,7 +81,7 @@ public class JabiaEntityFactory implements EntityFactory {
         npc.addComponent(new IDComponent("NPC", entity.getId()));
 
         npc.getViewComponent().getParent().setCursor(new ImageCursor(new Image(Objects.requireNonNull(getClass().getResourceAsStream(entity.getEntityType() == mpks.jabia.common.EntityType.TRADER ? "/assets/textures/ui/cursors/chat.png" : "/assets/textures/ui/cursors/question.png"))), GameSettings.cursorSize, GameSettings.cursorSize));
-        npc.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        npc.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED, _ -> {
             if (game.gameplay.getPlayer().distance(data.get("cellX"), data.get("cellY")) < 2) {
                 if (entity.getEntityType() == mpks.jabia.common.EntityType.TRADER) {
                     getNotificationService().pushNotification("TODO: trader");
@@ -116,7 +116,7 @@ public class JabiaEntityFactory implements EntityFactory {
                         entity.getViewComponent().addChild(new Texture(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/assets/textures/chest_open_empty.png")))));
                     }
                 })
-                .onNotActive((entity) -> cell.setState(CellState.WALKABLE))
+                .onNotActive(_ -> cell.setState(CellState.WALKABLE))
                 .build();
     }
 
@@ -132,7 +132,7 @@ public class JabiaEntityFactory implements EntityFactory {
         monster.addComponent(new IDComponent("monster", entity.getId()));
 
         monster.getViewComponent().getParent().setCursor(new ImageCursor(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/assets/textures/ui/cursors/attack.png"))), GameSettings.cursorSize, GameSettings.cursorSize));
-        monster.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        monster.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED, _ -> {
             if (game.gameplay.getPlayer().distance(data.get("cellX"), data.get("cellY")) < 2) {
                 game.informServerAttack(entity.getId());
             }
@@ -147,7 +147,7 @@ public class JabiaEntityFactory implements EntityFactory {
         double height = ((Number) data.get("height")).doubleValue();
 
         Entity entity = entityBuilder(data).type(WALKABLE).bbox(new HitBox(BoundingShape.box(width, height)))
-                .onClick((e) -> {
+                .onClick(_ -> {
                     int targetX = (int) (FXGL.getInput().getMouseXWorld() / GameSettings.tileSize);
                     int targetY = (int) (FXGL.getInput().getMouseYWorld() / GameSettings.tileSize);
 
