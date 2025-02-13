@@ -257,8 +257,12 @@ public class Game extends GameApplication {
         }
     }
 
-    public void setMonsterToDefeated(JSONObject json) {
-        runLater(()-> getNotificationService().pushNotification("TODO: defeated"));
-        int id = json.getInt("id");
+    public void setMonsterToDefeated(int id) {
+        runLater(() -> getGameWorld().getEntitiesByType(EntityType.MONSTER)
+                .stream()
+                .filter(entity -> entity.getComponent(IDComponent.class).getId() == id)
+                .findFirst()
+                .ifPresent(com.almasb.fxgl.entity.Entity::removeFromWorld)
+        );
     }
 }

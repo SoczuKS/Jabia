@@ -134,7 +134,6 @@ public class JabiaEntityFactory implements EntityFactory {
         monster.getViewComponent().getParent().setCursor(new ImageCursor(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/assets/textures/ui/cursors/attack.png"))), GameSettings.cursorSize, GameSettings.cursorSize));
         monster.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (game.gameplay.getPlayer().distance(data.get("cellX"), data.get("cellY")) < 2) {
-                //getNotificationService().pushNotification("TODO: fight");
                 game.informServerAttack(entity.getId());
             }
         });
