@@ -45,4 +45,8 @@ public class MonsterEntity extends Entity {
         jsonObject.put("magicResistance", magicResistance);
         return jsonObject;
     }
+
+    public void setDefeated(boolean b) {
+        isDefeated = b;
+    }
 }

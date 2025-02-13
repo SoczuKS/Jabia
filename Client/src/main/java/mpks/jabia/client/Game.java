@@ -79,6 +79,14 @@ public class Game extends GameApplication {
         }
     }
 
+    public void informServerAttack(int id) {
+        try {
+            SocketWriter.write(socket, RequestBuilder.buildAttackRequest(user.getUsername(), id));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     protected void initSettings(GameSettings settings) {
         settings.setWidth(windowWidth);
@@ -247,5 +255,10 @@ public class Game extends GameApplication {
                 break;
             }
         }
+    }
+
+    public void setMonsterToDefeated(JSONObject json) {
+        runLater(()-> getNotificationService().pushNotification("TODO: defeated"));
+        int id = json.getInt("id");
     }
 }

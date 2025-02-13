@@ -15,6 +15,8 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 
+import static mpks.jabia.common.RequestBuilder.buildMonsterDefeatedRequest;
+
 public class ClientHandler implements Runnable {
     Socket clientSocket;
     GameController gameController;
@@ -82,6 +84,16 @@ public class ClientHandler implements Runnable {
                 x = json.getInt("x");
                 y = json.getInt("y");
                 server.broadcast(json.toString(), user.getUsername());
+                break;
+
+            case "attack":
+                var id = json.getInt("id");
+                gameController.killMonster(id);
+                server.broadcast(buildMonsterDefeatedRequest(id));
+                break;
+
+            case "monsterDefeated":
+                server.broadcast(json.toString());
                 break;
         }
     }

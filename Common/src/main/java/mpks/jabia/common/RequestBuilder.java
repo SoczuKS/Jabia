@@ -34,4 +34,23 @@ public class RequestBuilder {
 
         return request.toString();
     }
+
+    public static String buildAttackRequest(String username, int id) {
+        JSONObject request = new JSONObject();
+        request.put("type", "request");
+        request.put("action", "attack");
+        request.put("username", username);
+        request.put("id", id);
+
+        return request.toString();
+    }
+
+    public static String buildMonsterDefeatedRequest(int id) {
+        JSONObject request = new JSONObject();
+        request.put("type", "request");
+        request.put("action", "monsterDefeated");
+        request.put("id", id);
+
+        return request.toString();
+    }
 }

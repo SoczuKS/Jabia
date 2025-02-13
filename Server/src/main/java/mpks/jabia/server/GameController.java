@@ -38,6 +38,10 @@ public class GameController {
         return user;
     }
 
+    void killMonster(int id) {
+        worldInfo.setMonsterToDefeated(id);
+    }
+
     public WorldInfo getWorldInfo() {
         return worldInfo;
     }

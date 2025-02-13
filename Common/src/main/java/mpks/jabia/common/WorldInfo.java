@@ -108,4 +108,14 @@ public class WorldInfo {
         spawnPointX = spawnPoint.getInt("x");
         spawnPointY = spawnPoint.getInt("y");
     }
+
+    public void setMonsterToDefeated(int id){
+        var monsters = getMonsters();
+        for(Entity entity : monsters){
+            if(entity.getId() == id){
+                MonsterEntity monster = (MonsterEntity) entity;
+                monster.setDefeated(true);
+            }
+        }
+    }
 }

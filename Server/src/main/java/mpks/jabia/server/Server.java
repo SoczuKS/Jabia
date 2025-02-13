@@ -54,4 +54,10 @@ public class Server {
             }
         }
     }
+
+    public void broadcast(String message) {
+        for (ClientHandler clientHandler : clientHandlers) {
+            clientHandler.sendMessage(message);
+        }
+    }
 }
