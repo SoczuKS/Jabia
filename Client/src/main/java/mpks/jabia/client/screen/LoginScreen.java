@@ -15,10 +15,16 @@ import mpks.jabia.common.RequestBuilder;
 import mpks.jabia.common.SocketWriter;
 import mpks.jabia.common.User;
 import mpks.jabia.common.WorldInfo;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.Socket;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static mpks.jabia.client.GameSettings.windowWidth;
 
@@ -81,28 +87,52 @@ public class LoginScreen extends FXGLMenu {
             Game game = (Game) FXGL.getApp();
             game.connectToServer();
             SocketWriter.write(game.socket, RequestBuilder.buildLoginRequest(username, password));
-            new Thread(() -> {
-                try {
-                    var reader = new BufferedReader(new InputStreamReader(game.socket.getInputStream()));
-                    String response = reader.readLine();
-                    JSONObject json = new JSONObject(response);
 
-                    if (json.getString("type").equals("response") && json.getString("action").equals("login")) {
-                        if (json.getString("status").equals("success")) {
-                            game.user = new User(json.getJSONObject("user"));
-                            game.worldInfo = new WorldInfo(json.getJSONObject("worldInfo"));
-                            game.otherPlayersInfo = json.getJSONArray("currentUsers");
-                            Platform.runLater(this::fireNewGame);
-                        }
-                    }
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                } finally {
-                    waitingForResponse = false;
+            ExecutorService loginExecutor = Executors.newSingleThreadExecutor();
+            LoginResponseHandler loginResponseHandler = new LoginResponseHandler(game.socket);
+
+            try {
+                Future<LoginResponseHandler.Result> future = loginExecutor.submit(loginResponseHandler);
+                LoginResponseHandler.Result result = future.get();
+
+                if (result.success) {
+                    game.user = result.user;
+                    game.worldInfo = result.worldInfo;
+                    game.otherPlayersInfo = result.otherPlayersInfo;
+                    Platform.runLater(this::fireNewGame);
                 }
-            }).start();
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            } finally {
+                waitingForResponse = false;
+                loginExecutor.shutdown();
+            }
         } catch (Exception e) {
             System.err.println(e.getMessage());
+        }
+    }
+
+    private record LoginResponseHandler(Socket socket) implements Callable<LoginResponseHandler.Result> {
+        @Override
+        public Result call() {
+            Result result = new Result(false, null, null, null);
+
+            try {
+                var reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String response = reader.readLine();
+                JSONObject json = new JSONObject(response);
+
+                if (json.getString("type").equals("response") && json.getString("action").equals("login") && json.getString("status").equals("success")) {
+                    result = new Result(true, new User(json.getJSONObject("user")), new WorldInfo(json.getJSONObject("worldInfo")), json.getJSONArray("currentUsers"));
+                }
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+
+            return result;
+        }
+
+        record Result(boolean success, User user, WorldInfo worldInfo, JSONArray otherPlayersInfo) {
         }
     }
 }
