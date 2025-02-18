@@ -21,4 +21,8 @@ public class CharacterComponent extends Component {
         }
         return "";
     }
+
+    public User getUser() {
+        return user;
+    }
 }

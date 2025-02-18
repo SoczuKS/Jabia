@@ -15,13 +15,11 @@ import mpks.jabia.client.character.CharacterEntity;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getUIFactoryService;
 
 public class BasicInfoView extends Parent {
-    private final CharacterEntity characterEntity;
     private final CharacterInfoView characterInfoView;
     private final MinimizeButton minimizeButton;
 
     public BasicInfoView(CharacterEntity entity) {
-        this.characterEntity = entity;
-        this.characterInfoView = new CharacterInfoView(this.characterEntity);
+        this.characterInfoView = new CharacterInfoView(entity);
         this.minimizeButton = new MinimizeButton("C", 15, 440 - 25, 0, -(440 - 25) + 25, this);
 
         Pane uiPane = new Pane();
@@ -37,14 +35,17 @@ public class BasicInfoView extends Parent {
         borderShape.setScaleX(-1.0);
         borderShape.setScaleY(-1.0);
 
-        Text text = getUIFactoryService().newText("", Color.WHITE, 12.0);
-        text.textProperty().set(characterEntity.getUsername());
+        Text text = getUIFactoryService().newText(entity.getUsername(), Color.WHITE, 12.0);
 
         VBox vBox = new VBox(5.0);
         vBox.setPadding(new Insets(10.0));
         vBox.getChildren().addAll(characterInfoView, new Separator(), uiPane, text);
 
         getChildren().addAll(borderShape, vBox, minimizeButton);
+    }
+
+    public void refresh() {
+        characterInfoView.generateView();
     }
 
     public MinimizeButton getMinimizeButton() {

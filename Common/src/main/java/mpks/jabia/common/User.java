@@ -94,7 +94,7 @@ public class User {
         return username;
     }
 
-    public JSONObject toJSON(){
+    public JSONObject toJSON() {
         return new JSONObject()
                 .put("id", id)
                 .put("username", username)
@@ -110,5 +110,33 @@ public class User {
                 .put("defence", defence)
                 .put("magicResistance", magicResistance)
                 .put("inventory", inventory.toJSON());
+    }
+
+    public int getIntelligence() {
+        return intelligence;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public int getAgility() {
+        return agility;
+    }
+
+    public int getVitality() {
+        return vitality;
+    }
+
+    public int getLuck() {
+        return luck;
+    }
+
+    public int getDefence() {
+        return defence;
+    }
+
+    public int getMagicResistance() {
+        return magicResistance;
     }
 }
